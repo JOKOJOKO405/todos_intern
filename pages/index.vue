@@ -6,6 +6,13 @@
       <button v-if="!isEdit" class="todo__btn">Add todo</button>
       <button v-else class="todo__btn">OverWrite</button>
     </form>
+    <div>
+      <select name="" id="">
+        <option selected>ソート</option>
+        <option value="1">作成日↑↑↑</option>
+        <option value="2">作成日↓↓↓</option>
+      </select>
+    </div>
     <ul class="todo__list">
       <li v-for="(todo, index) in todos" :key="todo.id" class="todo__item">
         <p class="todo__name" @click="editFlag(index)">{{ todo.todo }}</p>
