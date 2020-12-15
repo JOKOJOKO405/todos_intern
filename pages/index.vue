@@ -15,7 +15,7 @@
     </div>
     <ul class="todo__list">
       <li v-for="(todo, index) in todos" :key="todo.id" class="todo__item">
-        <p class="todo__name" @click="editFlag(index)">{{ todo.todo }}</p>
+        <p class="todo__name" @click="editFlag(index)">{{ todo.name }}</p>
         <p class="todo__date">{{ todo.createdAt }}</p>
         <button class="todo__delBtn" @click="deleteTodo(index)">Del</button>
       </li>
@@ -26,14 +26,15 @@
 <script lang="ts">
 import Vue from 'vue'
 import API, { graphqlOperation } from '@aws-amplify/api'
-import { createTodo } from '~/src/graphql/mutations'
+import { createTodo, updateTodo } from '~/src/graphql/mutations'
+import { listTodos, getTodo } from '~/src/graphql/queries'
 
 export type DataType = {
   todos: any[]
-  text: string
+  text: String
   isEdit: boolean
   todoIndex: any
-  newTodo: string
+  newTodo: String
 }
 export default Vue.extend({
   data(): DataType {
@@ -45,28 +46,52 @@ export default Vue.extend({
       newTodo: '',
     }
   },
+  async created(){
+    this.getTodo()
+  },
   methods: {
-    addTodo(): void {
-      if (this.text !== '') {
-        if (!this.isEdit) {
-          this.todos.push({
-            todo: this.text,
-            createdAt: new Date(),
-          })
+    async addTodo() {
+      const todo = {
+        name: this.text,
+      }
+      if(this.text !== ''){
+        if(!this.isEdit){
+          await API.graphql(graphqlOperation(createTodo, { input: todo }))
           this.text = ''
         } else {
-          this.todos[this.todoIndex].todo = this.text
+          await API.graphql(
+            graphqlOperation(updateTodo, { input: todo })
+          )
         }
-        this.isEdit = false
       }
     },
+    // addTodo(): void {
+    //   if (this.text !== '') {
+    //     if (!this.isEdit) {
+    //       this.todos.push({
+    //         todo: this.text,
+    //         createdAt: new Date(),
+    //       })
+    //       this.text = ''
+    //     } else {
+    //       this.todos[this.todoIndex].todo = this.text
+    //     }
+    //     this.isEdit = false
+    //   }
+    // },
     deleteTodo(index: number): void {
       this.todos.splice(index, 1)
     },
     editFlag(index: any) {
       this.isEdit = true
-      this.text = this.todos[index].todo
+      this.text = this.todos[index].name
       this.todoIndex = index
+    },
+    async getTodo(){
+      const todosData = await API.graphql({
+        query: listTodos,
+      })
+      this.todos.push(...this.todos, ...todosData.data.listTodos.items)
     },
   },
 })
