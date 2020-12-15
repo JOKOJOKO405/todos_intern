@@ -25,8 +25,15 @@
 
 <script lang="ts">
 import Vue from 'vue'
+export type DataType = {
+  todos: any[]
+  text: string
+  isEdit: boolean
+  todoIndex: any
+  newTodo: string
+}
 export default Vue.extend({
-  data() {
+  data(): DataType {
     return {
       todos: [],
       text: '',
@@ -53,7 +60,7 @@ export default Vue.extend({
     deleteTodo(index: number): void {
       this.todos.splice(index, 1)
     },
-    editFlag(index) {
+    editFlag(index: any) {
       this.isEdit = true
       this.text = this.todos[index].todo
       this.todoIndex = index
