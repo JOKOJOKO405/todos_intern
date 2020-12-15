@@ -7,7 +7,7 @@
       <button v-else class="todo__btn todo__btn-notice">OverWrite</button>
     </form>
     <div>
-      <select name="" id="">
+      <select id="" name="">
         <option selected>ソート</option>
         <option value="1">作成日↑↑↑</option>
         <option value="2">作成日↓↓↓</option>
@@ -26,8 +26,9 @@
 <script lang="ts">
 import Vue from 'vue'
 import API, { graphqlOperation } from '@aws-amplify/api'
-import { createTodo, updateTodo } from '~/src/graphql/mutations'
-import { listTodos, getTodo } from '~/src/graphql/queries'
+import { createTodo } from '~/src/graphql/mutations'
+import { listTodos } from '~/src/graphql/queries'
+import { onCreateTodo, onUpdateTodo } from '~/src/graphql/subscriptions'
 
 export type DataType = {
   todos: any[]
@@ -46,8 +47,9 @@ export default Vue.extend({
       newTodo: '',
     }
   },
-  async created() {
+  created() {
     this.getTodo()
+    this.subscribe()
   },
   methods: {
     async addTodo() {
@@ -60,12 +62,12 @@ export default Vue.extend({
           this.text = ''
         } else {
           const todoId = this.todos[this.todoIndex].id
-          
+
           await API.graphql(
-            graphqlOperation(updateTodo, {
+            graphqlOperation(onUpdateTodo, {
               input: {
                 id: todoId,
-                ...todo
+                ...todo,
               },
             })
           )
@@ -99,6 +101,18 @@ export default Vue.extend({
         query: listTodos,
       })
       this.todos.push(...this.todos, ...todosData.data.listTodos.items)
+    },
+    subscribe() {
+      const client = API.graphql(graphqlOperation(onCreateTodo))
+      if ('subscribe' in client) {
+        client.subscribe({
+          next: (eventData: any): any => {
+            const todo = eventData.value.data.onCreateTodo
+            if (this.todos.some((item) => item.name === todo.name)) return // remove duplications
+            this.todos = [...this.todos, todo]
+          },
+        })
+      }
     },
   },
 })
@@ -141,7 +155,7 @@ export default Vue.extend({
     padding: 10px;
     border-radius: 4px;
     font-weight: bold;
-    &-notice{
+    &-notice {
       background: #e5994c;
     }
   }
