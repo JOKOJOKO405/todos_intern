@@ -95,7 +95,7 @@ export default Vue.extend({
       this.todoIndex = index
     },
     async getTodo() {
-      const todosData = await API.graphql({
+      const todosData: any = await API.graphql({
         query: listTodos,
       })
       this.todos.push(...this.todos, ...todosData.data.listTodos.items)
