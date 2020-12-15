@@ -25,6 +25,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import API, { graphqlOperation } from '@aws-amplify/api'
+import { createTodo } from '~/src/graphql/mutations'
+
 export type DataType = {
   todos: any[]
   text: string
