@@ -28,7 +28,7 @@ import Vue from 'vue'
 import API, { graphqlOperation } from '@aws-amplify/api'
 import { createTodo } from '~/src/graphql/mutations'
 import { listTodos } from '~/src/graphql/queries'
-import { onCreateTodo, onUpdateTodo } from '~/src/graphql/subscriptions'
+import { onUpdateTodo } from '~/src/graphql/subscriptions'
 
 export type DataType = {
   todos: any[]
@@ -49,7 +49,7 @@ export default Vue.extend({
   },
   created() {
     this.getTodo()
-    this.subscribe()
+    // this.subscribe()
   },
   methods: {
     async addTodo() {
@@ -102,18 +102,18 @@ export default Vue.extend({
       })
       this.todos.push(...this.todos, ...todosData.data.listTodos.items)
     },
-    subscribe() {
-      const client = API.graphql(graphqlOperation(onCreateTodo))
-      if ('subscribe' in client) {
-        client.subscribe({
-          next: (eventData: any): any => {
-            const todo = eventData.value.data.onCreateTodo
-            if (this.todos.some((item) => item.name === todo.name)) return // remove duplications
-            this.todos = [...this.todos, todo]
-          },
-        })
-      }
-    },
+    // subscribe() {
+    //   const client = API.graphql(graphqlOperation(onCreateTodo))
+    //   if ('subscribe' in client) {
+    //     client.subscribe({
+    //       next: (eventData: any): any => {
+    //         const todo = eventData.value.data.onCreateTodo
+    //         if (this.todos.some((item) => item.name === todo.name)) return // remove duplications
+    //         this.todos = [...this.todos, todo]
+    //       },
+    //     })
+    //   }
+    // },
   },
 })
 </script>
