@@ -10,6 +10,7 @@
     "lint": "eslint --ext .ts,.js,.vue --ignore-path .gitignore ."
   },
   "dependencies": {
+    "@aws-amplify/ui-vue": "^0.2.31",
     "@nuxt/typescript-runtime": "^2.0.0",
     "aws-amplify": "^3.3.12",
     "core-js": "^3.6.5",
