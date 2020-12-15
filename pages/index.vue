@@ -4,7 +4,7 @@
     <form class="todo__form" @submit.prevent="addTodo">
       <input v-model="text" type="text" class="todo__input" />
       <button v-if="!isEdit" class="todo__btn">Add todo</button>
-      <button v-else class="todo__btn">OverWrite</button>
+      <button v-else class="todo__btn todo__btn-notice">OverWrite</button>
     </form>
     <div>
       <select name="" id="">
@@ -141,6 +141,9 @@ export default Vue.extend({
     padding: 10px;
     border-radius: 4px;
     font-weight: bold;
+    &-notice{
+      background: #e5994c;
+    }
   }
   &__input {
     padding: 10px;
