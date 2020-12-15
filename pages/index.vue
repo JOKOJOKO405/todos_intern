@@ -46,7 +46,7 @@ export default Vue.extend({
       newTodo: '',
     }
   },
-  async created(){
+  async created() {
     this.getTodo()
   },
   methods: {
@@ -54,13 +54,20 @@ export default Vue.extend({
       const todo = {
         name: this.text,
       }
-      if(this.text !== ''){
-        if(!this.isEdit){
+      if (this.text !== '') {
+        if (!this.isEdit) {
           await API.graphql(graphqlOperation(createTodo, { input: todo }))
           this.text = ''
         } else {
+          const todoId = this.todos[this.todoIndex].id
+          
           await API.graphql(
-            graphqlOperation(updateTodo, { input: todo })
+            graphqlOperation(updateTodo, {
+              input: {
+                id: todoId,
+                ...todo
+              },
+            })
           )
         }
       }
@@ -87,7 +94,7 @@ export default Vue.extend({
       this.text = this.todos[index].name
       this.todoIndex = index
     },
-    async getTodo(){
+    async getTodo() {
       const todosData = await API.graphql({
         query: listTodos,
       })
