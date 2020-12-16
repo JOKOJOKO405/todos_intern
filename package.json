@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@aws-amplify/api": "^3.2.15",
+    "@aws-amplify/ui-vue": "^0.2.31",
     "@nuxt/typescript-runtime": "^2.0.0",
     "aws-amplify": "^3.3.12",
     "core-js": "^3.6.5",
