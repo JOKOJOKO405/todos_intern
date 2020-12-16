@@ -6,11 +6,15 @@ export type CreateTodoInput = {
   id?: string | null,
   name: string,
   description?: string | null,
+  updatedAt?: string | null,
+  createdAt?: string | null,
 };
 
 export type ModelTodoConditionInput = {
   name?: ModelStringInput | null,
   description?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  createdAt?: ModelStringInput | null,
   and?: Array< ModelTodoConditionInput | null > | null,
   or?: Array< ModelTodoConditionInput | null > | null,
   not?: ModelTodoConditionInput | null,
@@ -60,6 +64,8 @@ export type UpdateTodoInput = {
   id: string,
   name?: string | null,
   description?: string | null,
+  updatedAt?: string | null,
+  createdAt?: string | null,
 };
 
 export type DeleteTodoInput = {
@@ -70,6 +76,8 @@ export type ModelTodoFilterInput = {
   id?: ModelIDInput | null,
   name?: ModelStringInput | null,
   description?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  createdAt?: ModelStringInput | null,
   and?: Array< ModelTodoFilterInput | null > | null,
   or?: Array< ModelTodoFilterInput | null > | null,
   not?: ModelTodoFilterInput | null,
@@ -91,6 +99,71 @@ export type ModelIDInput = {
   size?: ModelSizeInput | null,
 };
 
+export type SearchableTodoFilterInput = {
+  id?: SearchableIDFilterInput | null,
+  name?: SearchableStringFilterInput | null,
+  description?: SearchableStringFilterInput | null,
+  updatedAt?: SearchableStringFilterInput | null,
+  createdAt?: SearchableStringFilterInput | null,
+  and?: Array< SearchableTodoFilterInput | null > | null,
+  or?: Array< SearchableTodoFilterInput | null > | null,
+  not?: SearchableTodoFilterInput | null,
+};
+
+export type SearchableIDFilterInput = {
+  ne?: string | null,
+  gt?: string | null,
+  lt?: string | null,
+  gte?: string | null,
+  lte?: string | null,
+  eq?: string | null,
+  match?: string | null,
+  matchPhrase?: string | null,
+  matchPhrasePrefix?: string | null,
+  multiMatch?: string | null,
+  exists?: boolean | null,
+  wildcard?: string | null,
+  regexp?: string | null,
+  range?: Array< string | null > | null,
+};
+
+export type SearchableStringFilterInput = {
+  ne?: string | null,
+  gt?: string | null,
+  lt?: string | null,
+  gte?: string | null,
+  lte?: string | null,
+  eq?: string | null,
+  match?: string | null,
+  matchPhrase?: string | null,
+  matchPhrasePrefix?: string | null,
+  multiMatch?: string | null,
+  exists?: boolean | null,
+  wildcard?: string | null,
+  regexp?: string | null,
+  range?: Array< string | null > | null,
+};
+
+export type SearchableTodoSortInput = {
+  field?: SearchableTodoSortableFields | null,
+  direction?: SearchableSortDirection | null,
+};
+
+export enum SearchableTodoSortableFields {
+  id = "id",
+  name = "name",
+  description = "description",
+  updatedAt = "updatedAt",
+  createdAt = "createdAt",
+}
+
+
+export enum SearchableSortDirection {
+  asc = "asc",
+  desc = "desc",
+}
+
+
 export type CreateTodoMutationVariables = {
   input: CreateTodoInput,
   condition?: ModelTodoConditionInput | null,
@@ -102,8 +175,8 @@ export type CreateTodoMutation = {
     id: string,
     name: string,
     description: string | null,
+    updatedAt: string | null,
     createdAt: string,
-    updatedAt: string,
   } | null,
 };
 
@@ -118,8 +191,8 @@ export type UpdateTodoMutation = {
     id: string,
     name: string,
     description: string | null,
+    updatedAt: string | null,
     createdAt: string,
-    updatedAt: string,
   } | null,
 };
 
@@ -134,8 +207,8 @@ export type DeleteTodoMutation = {
     id: string,
     name: string,
     description: string | null,
+    updatedAt: string | null,
     createdAt: string,
-    updatedAt: string,
   } | null,
 };
 
@@ -149,8 +222,8 @@ export type GetTodoQuery = {
     id: string,
     name: string,
     description: string | null,
+    updatedAt: string | null,
     createdAt: string,
-    updatedAt: string,
   } | null,
 };
 
@@ -168,10 +241,34 @@ export type ListTodosQuery = {
       id: string,
       name: string,
       description: string | null,
+      updatedAt: string | null,
       createdAt: string,
-      updatedAt: string,
     } | null > | null,
     nextToken: string | null,
+  } | null,
+};
+
+export type SearchTodosQueryVariables = {
+  filter?: SearchableTodoFilterInput | null,
+  sort?: SearchableTodoSortInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  from?: number | null,
+};
+
+export type SearchTodosQuery = {
+  searchTodos:  {
+    __typename: "SearchableTodoConnection",
+    items:  Array< {
+      __typename: "Todo",
+      id: string,
+      name: string,
+      description: string | null,
+      updatedAt: string | null,
+      createdAt: string,
+    } | null > | null,
+    nextToken: string | null,
+    total: number | null,
   } | null,
 };
 
@@ -181,8 +278,8 @@ export type OnCreateTodoSubscription = {
     id: string,
     name: string,
     description: string | null,
+    updatedAt: string | null,
     createdAt: string,
-    updatedAt: string,
   } | null,
 };
 
@@ -192,8 +289,8 @@ export type OnUpdateTodoSubscription = {
     id: string,
     name: string,
     description: string | null,
+    updatedAt: string | null,
     createdAt: string,
-    updatedAt: string,
   } | null,
 };
 
@@ -203,7 +300,7 @@ export type OnDeleteTodoSubscription = {
     id: string,
     name: string,
     description: string | null,
+    updatedAt: string | null,
     createdAt: string,
-    updatedAt: string,
   } | null,
 };

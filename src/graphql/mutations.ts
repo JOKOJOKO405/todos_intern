@@ -11,8 +11,8 @@ export const createTodo = /* GraphQL */ `
       id
       name
       description
-      createdAt
       updatedAt
+      createdAt
     }
   }
 `;
@@ -25,8 +25,8 @@ export const updateTodo = /* GraphQL */ `
       id
       name
       description
-      createdAt
       updatedAt
+      createdAt
     }
   }
 `;
@@ -39,8 +39,8 @@ export const deleteTodo = /* GraphQL */ `
       id
       name
       description
-      createdAt
       updatedAt
+      createdAt
     }
   }
 `;
