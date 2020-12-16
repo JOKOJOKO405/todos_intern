@@ -1,36 +1,39 @@
 <template>
   <div class="container">
-    <h1 class="todo__title">TODOリスト</h1>
-    <form class="todo__form">
-      <input v-model="text" type="text" class="todo__input" />
-      <button v-if="!isEdit" class="todo__btn" @click.prevent="addTodo">
-        Add todo
-      </button>
-      <button
-        v-else
-        class="todo__btn todo__btn-notice"
-        @click.prevent="editTodo"
-      >
-        OverWrite
-      </button>
-      <button class="todo__btn todo__btn-clear" @click.prevent="clearText">
-        Clear
-      </button>
-    </form>
-    <div>
-      <select id="" name="">
-        <option selected>ソート</option>
-        <option value="1">作成日↑↑↑</option>
-        <option value="2">作成日↓↓↓</option>
-      </select>
-    </div>
-    <ul class="todo__list">
-      <li v-for="(todo, index) in todos" :key="todo.id" class="todo__item">
-        <p class="todo__name" @click="editFlag(index)">{{ todo.name }}</p>
-        <p class="todo__date">{{ todo.createdAt }}</p>
-        <button class="todo__delBtn" @click="deleteTodo(index)">Del</button>
-      </li>
-    </ul>
+    <amplify-authenticator>
+      <h1 class="todo__title">TODOリスト</h1>
+      <form class="todo__form">
+        <input v-model="text" type="text" class="todo__input" />
+        <button v-if="!isEdit" class="todo__btn" @click.prevent="addTodo">
+          Add todo
+        </button>
+        <button
+          v-else
+          class="todo__btn todo__btn-notice"
+          @click.prevent="editTodo"
+        >
+          OverWrite
+        </button>
+        <button class="todo__btn todo__btn-clear" @click.prevent="clearText">
+          Clear
+        </button>
+      </form>
+      <div>
+        <select id="" name="">
+          <option selected>ソート</option>
+          <option value="1">作成日↑↑↑</option>
+          <option value="2">作成日↓↓↓</option>
+        </select>
+      </div>
+      <ul class="todo__list">
+        <li v-for="(todo, index) in todos" :key="todo.id" class="todo__item">
+          <p class="todo__name" @click="editFlag(index)">{{ todo.name }}</p>
+          <p class="todo__date">{{ todo.createdAt }}</p>
+          <button class="todo__delBtn" @click="deleteTodo(index)">Del</button>
+        </li>
+      </ul>
+      <amplify-sign-out></amplify-sign-out>
+    </amplify-authenticator>
   </div>
 </template>
 
@@ -39,7 +42,7 @@ import Vue from 'vue'
 import API, { graphqlOperation } from '@aws-amplify/api'
 import { createTodo, updateTodo, deleteTodo } from '~/src/graphql/mutations'
 import { listTodos } from '~/src/graphql/queries'
-// import { createTodo } from '~/src/graphql/subscriptions'
+// import { onCreateTodo } from '~/src/graphql/subscriptions'
 
 export type DataType = {
   todos: any[]
@@ -120,19 +123,20 @@ export default Vue.extend({
       this.isEdit = false
     },
     async getTodo() {
-      const todosData: any = await API.graphql({
-        query: listTodos,
-      })
+      const todosData: any = await API.graphql(graphqlOperation(listTodos))
       this.todos.push(...this.todos, ...todosData.data.listTodos.items)
     },
     // async subscribe() {
-    //   await API.graphql({ query: onCreateTodo }).subscribe({
-    //     next: (eventData: any): void => {
-    //       const todo = eventData.value.data.onCreateTodo
-    //       if (this.todos.some((item) => item.name === todo.name)) return // remove duplications
-    //       this.todos = [...this.todos, todo]
-    //     },
-    //   })
+    //   const client = await API.graphql({ query: onCreateTodo })
+    //   if ('subscribe' in client) {
+    //     client.subscribe({
+    //       next: (eventData: any): void => {
+    //         const todo = eventData.value.data.onCreateTodo
+    //         if (this.todos.some((item) => item.name === todo.name)) return
+    //         this.todos = [...this.todos, todo]
+    //       },
+    //     })
+    //   }
     // },
   },
 })
@@ -147,6 +151,9 @@ export default Vue.extend({
     padding: 0;
     box-sizing: border-box;
   }
+}
+.button {
+  border-radius: 8px;
 }
 .container {
   padding: 50px;
@@ -190,6 +197,7 @@ export default Vue.extend({
   }
   &__list {
     list-style: none;
+    margin-bottom: 40px;
   }
   &__item {
     border-bottom: 1px solid #eee;
