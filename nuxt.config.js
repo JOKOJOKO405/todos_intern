@@ -9,7 +9,7 @@ export default {
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
   },
-
+  ssr: false,
   // Global CSS (https://go.nuxtjs.dev/config-css)
   css: [],
 
