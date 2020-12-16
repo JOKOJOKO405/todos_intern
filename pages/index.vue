@@ -26,9 +26,9 @@
 <script lang="ts">
 import Vue from 'vue'
 import API, { graphqlOperation } from '@aws-amplify/api'
-import { createTodo } from '~/src/graphql/mutations'
+import { createTodo, updateTodo, deleteTodo } from '~/src/graphql/mutations'
 import { listTodos } from '~/src/graphql/queries'
-import { onUpdateTodo } from '~/src/graphql/subscriptions'
+// import { createTodo } from '~/src/graphql/subscriptions'
 
 export type DataType = {
   todos: any[]
@@ -37,6 +37,7 @@ export type DataType = {
   todoIndex: any
   newTodo: String
 }
+
 export default Vue.extend({
   data(): DataType {
     return {
@@ -61,10 +62,10 @@ export default Vue.extend({
           await API.graphql(graphqlOperation(createTodo, { input: todo }))
           this.text = ''
         } else {
-          const todoId = this.todos[this.todoIndex].id
+          const todoId: string = this.todos[this.todoIndex].id
 
           await API.graphql(
-            graphqlOperation(onUpdateTodo, {
+            graphqlOperation(updateTodo, {
               input: {
                 id: todoId,
                 ...todo,
@@ -88,8 +89,9 @@ export default Vue.extend({
     //     this.isEdit = false
     //   }
     // },
-    deleteTodo(index: number): void {
-      this.todos.splice(index, 1)
+    async deleteTodo(index: any) {
+      const todoId: string = this.todos[index].id
+      await API.graphql(graphqlOperation(deleteTodo, { input: { id: todoId } }))
     },
     editFlag(index: any) {
       this.isEdit = true
@@ -102,17 +104,14 @@ export default Vue.extend({
       })
       this.todos.push(...this.todos, ...todosData.data.listTodos.items)
     },
-    // subscribe() {
-    //   const client = API.graphql(graphqlOperation(onCreateTodo))
-    //   if ('subscribe' in client) {
-    //     client.subscribe({
-    //       next: (eventData: any): any => {
-    //         const todo = eventData.value.data.onCreateTodo
-    //         if (this.todos.some((item) => item.name === todo.name)) return // remove duplications
-    //         this.todos = [...this.todos, todo]
-    //       },
-    //     })
-    //   }
+    // async subscribe() {
+    //   await API.graphql({ query: onCreateTodo }).subscribe({
+    //     next: (eventData: any): void => {
+    //       const todo = eventData.value.data.onCreateTodo
+    //       if (this.todos.some((item) => item.name === todo.name)) return // remove duplications
+    //       this.todos = [...this.todos, todo]
+    //     },
+    //   })
     // },
   },
 })
