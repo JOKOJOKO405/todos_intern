@@ -19,14 +19,15 @@
         </button>
       </form>
       <div>
-        <select id="" name="">
+        <select v-model.number="sort">
           <option selected>ソート</option>
           <option value="1">作成日↑↑↑</option>
           <option value="2">作成日↓↓↓</option>
         </select>
+        <input v-model="searchText" type="text" />
       </div>
       <ul class="todo__list">
-        <li v-for="(todo, index) in todos" :key="todo.id" class="todo__item">
+        <li v-for="(todo, index) in todos" :key="index" class="todo__item">
           <p class="todo__name" @click="editFlag(index)">{{ todo.name }}</p>
           <p class="todo__date">{{ todo.createdAt }}</p>
           <button class="todo__delBtn" @click="deleteTodo(index)">Del</button>
@@ -40,9 +41,9 @@
 <script lang="ts">
 import Vue from 'vue'
 import API, { graphqlOperation } from '@aws-amplify/api'
-import { createTodo, updateTodo, deleteTodo } from '~/src/graphql/mutations'
-import { listTodos } from '~/src/graphql/queries'
-// import { onCreateTodo } from '~/src/graphql/subscriptions'
+import { createTodo, deleteTodo, updateTodo } from '~/src/graphql/mutations'
+import { listTodos, searchTodos } from '~/src/graphql/queries'
+import { onCreateTodo } from '~/src/graphql/subscriptions'
 
 export type DataType = {
   todos: any[]
@@ -50,6 +51,7 @@ export type DataType = {
   isEdit: boolean
   todoIndex: any
   newTodo: String
+  sort: Number
 }
 
 export default Vue.extend({
@@ -60,11 +62,25 @@ export default Vue.extend({
       isEdit: false,
       todoIndex: '',
       newTodo: '',
+      sort: 1,
     }
+  },
+  computed: {
+    async sortTodo() {
+      // type querySort = {
+      //   sort: {
+      //     field: string
+      //     direction: string
+      //   }
+      // }
+      // if (this.sort === 1) {
+      //   const result = await API.graphql(graphqlOperation(searchTodos, query))
+      // }
+    },
   },
   created() {
     this.getTodo()
-    // this.subscribe()
+    this.subscribe()
   },
   methods: {
     async addTodo() {
@@ -83,6 +99,7 @@ export default Vue.extend({
         name: this.text,
       }
       const todoId: string = this.todos[this.todoIndex].id
+
       if (this.text !== '') {
         await API.graphql(
           graphqlOperation(updateTodo, {
@@ -95,20 +112,6 @@ export default Vue.extend({
         this.isEdit = false
       }
     },
-    // addTodo(): void {
-    //   if (this.text !== '') {
-    //     if (!this.isEdit) {
-    //       this.todos.push({
-    //         todo: this.text,
-    //         createdAt: new Date(),
-    //       })
-    //       this.text = ''
-    //     } else {
-    //       this.todos[this.todoIndex].todo = this.text
-    //     }
-    //     this.isEdit = false
-    //   }
-    // },
     async deleteTodo(index: any) {
       const todoId: string = this.todos[index].id
       await API.graphql(graphqlOperation(deleteTodo, { input: { id: todoId } }))
@@ -126,18 +129,17 @@ export default Vue.extend({
       const todosData: any = await API.graphql(graphqlOperation(listTodos))
       this.todos.push(...this.todos, ...todosData.data.listTodos.items)
     },
-    // async subscribe() {
-    //   const client = await API.graphql({ query: onCreateTodo })
-    //   if ('subscribe' in client) {
-    //     client.subscribe({
-    //       next: (eventData: any): void => {
-    //         const todo = eventData.value.data.onCreateTodo
-    //         if (this.todos.some((item) => item.name === todo.name)) return
-    //         this.todos = [...this.todos, todo]
-    //       },
-    //     })
-    //   }
-    // },
+    subscribe() {
+      const client = API.graphql(graphqlOperation(onCreateTodo))
+      if ('subscribe' in client) {
+        client.subscribe({
+          next: (eventData: any): void => {
+            const todo = eventData.value.data.onCreateTodo
+            this.todos = [...this.todos, todo]
+          },
+        })
+      }
+    },
   },
 })
 </script>
@@ -151,9 +153,6 @@ export default Vue.extend({
     padding: 0;
     box-sizing: border-box;
   }
-}
-.button {
-  border-radius: 8px;
 }
 .container {
   padding: 50px;
