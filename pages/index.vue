@@ -89,6 +89,7 @@ export default Vue.extend({
             },
           })
         )
+        this.isEdit = false
       }
     },
     // addTodo(): void {
