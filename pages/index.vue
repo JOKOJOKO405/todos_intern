@@ -1,10 +1,21 @@
 <template>
   <div class="container">
     <h1 class="todo__title">TODOリスト</h1>
-    <form class="todo__form" @submit.prevent="addTodo">
+    <form class="todo__form">
       <input v-model="text" type="text" class="todo__input" />
-      <button v-if="!isEdit" class="todo__btn">Add todo</button>
-      <button v-else class="todo__btn todo__btn-notice">OverWrite</button>
+      <button v-if="!isEdit" class="todo__btn" @click.prevent="addTodo">
+        Add todo
+      </button>
+      <button
+        v-else
+        class="todo__btn todo__btn-notice"
+        @click.prevent="editTodo"
+      >
+        OverWrite
+      </button>
+      <button class="todo__btn todo__btn-clear" @click.prevent="clearText">
+        Clear
+      </button>
     </form>
     <div>
       <select id="" name="">
@@ -61,18 +72,23 @@ export default Vue.extend({
         if (!this.isEdit) {
           await API.graphql(graphqlOperation(createTodo, { input: todo }))
           this.text = ''
-        } else {
-          const todoId: string = this.todos[this.todoIndex].id
-
-          await API.graphql(
-            graphqlOperation(updateTodo, {
-              input: {
-                id: todoId,
-                ...todo,
-              },
-            })
-          )
         }
+      }
+    },
+    async editTodo() {
+      const todo = {
+        name: this.text,
+      }
+      const todoId: string = this.todos[this.todoIndex].id
+      if (this.text !== '') {
+        await API.graphql(
+          graphqlOperation(updateTodo, {
+            input: {
+              id: todoId,
+              ...todo,
+            },
+          })
+        )
       }
     },
     // addTodo(): void {
@@ -97,6 +113,10 @@ export default Vue.extend({
       this.isEdit = true
       this.text = this.todos[index].name
       this.todoIndex = index
+    },
+    clearText(): void {
+      this.text = ''
+      this.isEdit = false
     },
     async getTodo() {
       const todosData: any = await API.graphql({
@@ -157,12 +177,15 @@ export default Vue.extend({
     &-notice {
       background: #e5994c;
     }
+    &-clear {
+      background: #34caca;
+    }
   }
   &__input {
     padding: 10px;
     border-radius: 4px;
     border: none;
-    width: 80%;
+    width: 73%;
   }
   &__list {
     list-style: none;
