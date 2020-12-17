@@ -25,8 +25,10 @@ const useTodo = () => {
       if (authData && authState) {
         getTodo()
         subscribe()
+        console.log('success')
       } else {
         state.todos = []
+        console.log('faild')
       }
     })
   }
@@ -113,4 +115,5 @@ const useTodo = () => {
     subscribe,
   }
 }
+export type TodoStore = ReturnType<typeof useTodo>
 export default useTodo
