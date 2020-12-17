@@ -1,7 +1,7 @@
 <template>
   <form class="todo__form">
     <input v-model="state.text" type="text" class="todo__input" />
-    <button v-if="!isEdit" class="todo__btn" @click.prevent="addTodo">
+    <button v-if="!state.isEdit" class="todo__btn" @click.prevent="addTodo">
       Add todo
     </button>
     <button v-else class="todo__btn todo__btn-notice" @click.prevent="editTodo">
