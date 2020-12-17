@@ -17,24 +17,19 @@ export default {
   plugins: ['~/plugins/amplify.js'],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
-  components: true,
+  components: ['@/components/', '@/templates/'],
 
   // Modules for dev and build (recommended) (https://go.nuxtjs.dev/config-modules)
   buildModules: [
     // https://go.nuxtjs.dev/eslint
     '@nuxtjs/eslint-module',
     '@nuxt/typescript-build',
+    '@nuxtjs/composition-api',
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [],
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
-  build: {
-    extend(config) {
-      config.node = {
-        fs: 'empty',
-      }
-    },
-  },
+  build: {},
 }
