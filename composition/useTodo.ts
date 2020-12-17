@@ -20,8 +20,8 @@ const useTodo = () => {
 
   /* ============ ロジック ============ */
   // created
-  const created = () => {
-    onAuthUIStateChange((authData, authState) => {
+  const created = async () => {
+    await onAuthUIStateChange((authData, authState) => {
       if (authData && authState) {
         getTodo()
         subscribe()
@@ -31,6 +31,11 @@ const useTodo = () => {
         console.log('faild')
       }
     })
+    console.log('呼び出し')
+  }
+
+  const test = () => {
+    console.log('呼び出されました')
   }
 
   // Todo追加
@@ -82,6 +87,7 @@ const useTodo = () => {
   const clearText = () => {
     state.text = ''
     state.isEdit = false
+    console.log('消したよ')
   }
 
   // Todo取得
@@ -113,6 +119,7 @@ const useTodo = () => {
     clearText,
     getTodo,
     subscribe,
+    test,
   }
 }
 export type TodoStore = ReturnType<typeof useTodo>
