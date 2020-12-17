@@ -13,6 +13,7 @@ export const createTodo = /* GraphQL */ `
       description
       updatedAt
       createdAt
+      owner
     }
   }
 `;
@@ -27,6 +28,7 @@ export const updateTodo = /* GraphQL */ `
       description
       updatedAt
       createdAt
+      owner
     }
   }
 `;
@@ -41,6 +43,7 @@ export const deleteTodo = /* GraphQL */ `
       description
       updatedAt
       createdAt
+      owner
     }
   }
 `;

@@ -1,7 +1,7 @@
 type Todo
-@model
-@searchable
-{
+  @model
+  @auth(rules: [{ allow: owner, operations: [create, read, delete, update] }])
+  @searchable {
   id: ID!
   name: String!
   description: String

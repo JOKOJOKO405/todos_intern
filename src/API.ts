@@ -177,6 +177,7 @@ export type CreateTodoMutation = {
     description: string | null,
     updatedAt: string | null,
     createdAt: string,
+    owner: string | null,
   } | null,
 };
 
@@ -193,6 +194,7 @@ export type UpdateTodoMutation = {
     description: string | null,
     updatedAt: string | null,
     createdAt: string,
+    owner: string | null,
   } | null,
 };
 
@@ -209,6 +211,7 @@ export type DeleteTodoMutation = {
     description: string | null,
     updatedAt: string | null,
     createdAt: string,
+    owner: string | null,
   } | null,
 };
 
@@ -224,6 +227,7 @@ export type GetTodoQuery = {
     description: string | null,
     updatedAt: string | null,
     createdAt: string,
+    owner: string | null,
   } | null,
 };
 
@@ -243,6 +247,7 @@ export type ListTodosQuery = {
       description: string | null,
       updatedAt: string | null,
       createdAt: string,
+      owner: string | null,
     } | null > | null,
     nextToken: string | null,
   } | null,
@@ -266,10 +271,15 @@ export type SearchTodosQuery = {
       description: string | null,
       updatedAt: string | null,
       createdAt: string,
+      owner: string | null,
     } | null > | null,
     nextToken: string | null,
     total: number | null,
   } | null,
+};
+
+export type OnCreateTodoSubscriptionVariables = {
+  owner: string,
 };
 
 export type OnCreateTodoSubscription = {
@@ -280,7 +290,12 @@ export type OnCreateTodoSubscription = {
     description: string | null,
     updatedAt: string | null,
     createdAt: string,
+    owner: string | null,
   } | null,
+};
+
+export type OnUpdateTodoSubscriptionVariables = {
+  owner: string,
 };
 
 export type OnUpdateTodoSubscription = {
@@ -291,7 +306,12 @@ export type OnUpdateTodoSubscription = {
     description: string | null,
     updatedAt: string | null,
     createdAt: string,
+    owner: string | null,
   } | null,
+};
+
+export type OnDeleteTodoSubscriptionVariables = {
+  owner: string,
 };
 
 export type OnDeleteTodoSubscription = {
@@ -302,5 +322,6 @@ export type OnDeleteTodoSubscription = {
     description: string | null,
     updatedAt: string | null,
     createdAt: string,
+    owner: string | null,
   } | null,
 };
