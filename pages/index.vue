@@ -41,17 +41,20 @@
 <script lang="ts">
 import Vue from 'vue'
 import API, { graphqlOperation } from '@aws-amplify/api'
+// 認証系
+import { onAuthUIStateChange } from '@aws-amplify/ui-components'
 import { createTodo, deleteTodo, updateTodo } from '~/src/graphql/mutations'
-import { listTodos, searchTodos } from '~/src/graphql/queries'
+import { listTodos } from '~/src/graphql/queries'
 import { onCreateTodo } from '~/src/graphql/subscriptions'
 
 export type DataType = {
   todos: any[]
-  text: String
+  text: string
   isEdit: boolean
   todoIndex: any
-  newTodo: String
-  sort: Number
+  newTodo: string
+  sort: number
+  searchText: string
 }
 
 export default Vue.extend({
@@ -63,24 +66,18 @@ export default Vue.extend({
       todoIndex: '',
       newTodo: '',
       sort: 1,
+      searchText: '',
     }
   },
-  computed: {
-    async sortTodo() {
-      // type querySort = {
-      //   sort: {
-      //     field: string
-      //     direction: string
-      //   }
-      // }
-      // if (this.sort === 1) {
-      //   const result = await API.graphql(graphqlOperation(searchTodos, query))
-      // }
-    },
-  },
   created() {
-    this.getTodo()
-    this.subscribe()
+    onAuthUIStateChange((authData, authState) => {
+      if (authData && authState) {
+        this.getTodo()
+        this.subscribe()
+      } else {
+        this.todos = []
+      }
+    })
   },
   methods: {
     async addTodo() {
@@ -129,8 +126,8 @@ export default Vue.extend({
       const todosData: any = await API.graphql(graphqlOperation(listTodos))
       this.todos.push(...this.todos, ...todosData.data.listTodos.items)
     },
-    subscribe() {
-      const client = API.graphql(graphqlOperation(onCreateTodo))
+    async subscribe() {
+      const client = await API.graphql(graphqlOperation(onCreateTodo))
       if ('subscribe' in client) {
         client.subscribe({
           next: (eventData: any): void => {
