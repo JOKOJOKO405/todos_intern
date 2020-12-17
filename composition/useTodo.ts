@@ -1,24 +1,14 @@
 import { reactive } from '@nuxtjs/composition-api'
-// import { onAuthUIStateChange } from '@aws-amplify/ui-components'
+import { onAuthUIStateChange } from '@aws-amplify/ui-components'
 import API, { graphqlOperation } from '@aws-amplify/api'
 // 認証系
 import { createTodo, deleteTodo, updateTodo } from '~/src/graphql/mutations'
 import { listTodos } from '~/src/graphql/queries'
 import { onCreateTodo } from '~/src/graphql/subscriptions'
 
-export type DataType = {
-  todos: any[]
-  text: string
-  isEdit: boolean
-  todoIndex: any
-  newTodo: string
-  sort: number
-  searchText: string
-}
-
 const useTodo = () => {
   // state
-  const state: DataType = reactive({
+  const state = reactive<any>({
     todos: [],
     text: '',
     isEdit: false,
@@ -29,6 +19,18 @@ const useTodo = () => {
   })
 
   /* ============ ロジック ============ */
+  // created
+  const created = () => {
+    onAuthUIStateChange((authData, authState) => {
+      if (authData && authState) {
+        getTodo()
+        subscribe()
+      } else {
+        state.todos = []
+      }
+    })
+  }
+
   // Todo追加
   const addTodo = async () => {
     const todo = {
@@ -99,19 +101,9 @@ const useTodo = () => {
     }
   }
 
-  // created() {
-  //   onAuthUIStateChange((authData, authState) => {
-  //     if (authData && authState) {
-  //       this.getTodo()
-  //       this.subscribe()
-  //     } else {
-  //       this.todos = []
-  //     }
-  //   })
-  // },
-
   return {
     state,
+    created,
     addTodo,
     editTodo,
     delTodo,
