@@ -12,15 +12,12 @@
 
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
-import FormComponent from '~/components/FormComponent.vue'
-import ListComponent from '~/components/ListComponent.vue'
-import OptionComponent from '~/components/OptionComponent.vue'
+import useTodo from '~/composition/useTodo'
 
 export default defineComponent({
-  components: {
-    FormComponent,
-    ListComponent,
-    OptionComponent,
+  setup() {
+    const { created } = useTodo()
+    return { created }
   },
 })
 </script>
