@@ -13,9 +13,11 @@
     "@aws-amplify/api": "^3.2.15",
     "@aws-amplify/ui-vue": "^0.2.31",
     "@nuxt/typescript-runtime": "^2.0.0",
+    "@nuxt/utils-edge": "^2.15.0-26802759.5a5161aa",
     "@nuxtjs/composition-api": "^0.17.0",
     "aws-amplify": "^3.3.12",
     "core-js": "^3.6.5",
+    "fs": "0.0.1-security",
     "nuxt": "^2.14.6"
   },
   "devDependencies": {
