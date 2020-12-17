@@ -1,38 +1,31 @@
 <template>
   <div class="container">
+    <h1 class="todo__title">TODOリスト</h1>
     <amplify-authenticsator>
-      <h1 class="todo__title">TODOリスト</h1>
-      <FormComponent />
-      <ListComponent />
-      <OptionComponent />
+      <BoardComponent>
+        <FormComponent />
+        <ListComponent />
+        <OptionComponent />
+      </BoardComponent>
       <amplify-sign-out></amplify-sign-out>
     </amplify-authenticsator>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, inject } from '@nuxtjs/composition-api'
+import { defineComponent, provide } from '@nuxtjs/composition-api'
 import { TodoKey } from '~/composition/compositionKey'
-import { TodoStore } from '~/composition/useTodo'
+import useTodo from '~/composition/useTodo'
 
 export default defineComponent({
   setup() {
-    const { created } = inject(TodoKey) as TodoStore
-    return { created }
+    provide(TodoKey, useTodo())
+    return {}
   },
 })
 </script>
 
 <style lang="scss">
-* {
-  &,
-  &::before,
-  &::after {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-}
 .container {
   padding: 50px;
   max-width: 840px;
