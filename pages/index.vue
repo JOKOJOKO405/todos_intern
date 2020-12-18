@@ -1,11 +1,10 @@
 <template>
   <div class="container">
-    <h1 class="todo__title">TODOリスト</h1>
-    <BoardComponent>
-      <FormComponent />
-      <ListComponent />
-      <OptionComponent />
-    </BoardComponent>
+    <form @submit.prevent="signIn">
+      <input v-model="state.name" type="text" name="name" />
+      <input v-model="state.pass" type="password" name="pass" />
+      <button>Sign In</button>
+    </form>
   </div>
 </template>
 
@@ -16,8 +15,8 @@ import { TodoStore } from '~/composition/useTodo'
 
 export default defineComponent({
   setup() {
-    const { created } = inject(TodoKey) as TodoStore
-    return { created }
+    const { signIn, state } = inject(TodoKey) as TodoStore
+    return { signIn, state }
   },
 })
 </script>
