@@ -17,7 +17,7 @@
       <OptionComponent />
     </BoardComponent>
     <form @submit.prevent="signOut">
-      <button>Sign Out</button>
+      <button class="signOut">Sign Out</button>
     </form>
   </div>
 </template>
@@ -37,13 +37,12 @@ export default defineComponent({
       } else {
         getTodo()
         subscribe()
-        console.log('success')
       }
     })
-    const { signOut, state, getTodo, subscribe, delTodo } = inject(
+    const { signOut, state, getTodo, subscribe, editFlag, delTodo } = inject(
       TodoKey
     ) as TodoStore
-    return { signOut, state, getTodo, subscribe, delTodo }
+    return { signOut, state, getTodo, subscribe, editFlag, delTodo }
   },
 })
 </script>
@@ -88,5 +87,14 @@ export default defineComponent({
     border: none;
     background: #f19273;
   }
+}
+.signOut {
+  background: #4d4d4d;
+  color: #fff;
+  padding: 16px;
+  width: 160px;
+  border: none;
+  display: block;
+  margin: 0 auto;
 }
 </style>
