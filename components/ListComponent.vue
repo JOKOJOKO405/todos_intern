@@ -15,11 +15,12 @@ import { TodoKey } from '~/composition/compositionKey'
 
 export default defineComponent({
   setup() {
-    const { state, getTodo, delTodo } = inject(TodoKey) as TodoStore
+    const { state, getTodo, subscribe, delTodo } = inject(TodoKey) as TodoStore
 
     return {
       state,
       getTodo,
+      subscribe,
       delTodo,
     }
   },
