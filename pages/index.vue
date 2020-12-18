@@ -13,14 +13,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, provide } from '@nuxtjs/composition-api'
+import { defineComponent, inject } from '@nuxtjs/composition-api'
 import { TodoKey } from '~/composition/compositionKey'
-import useTodo from '~/composition/useTodo'
+import { TodoStore } from '~/composition/useTodo'
 
 export default defineComponent({
   setup() {
-    provide(TodoKey, useTodo())
-    return {}
+    const { created } = inject(TodoKey) as TodoStore
+    return { created }
   },
 })
 </script>
