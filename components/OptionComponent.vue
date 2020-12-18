@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="options">
     <select v-model.number="state.sort">
       <option selected>ソート</option>
       <option value="1">作成日↑↑↑</option>
@@ -23,3 +23,9 @@ export default defineComponent({
   },
 })
 </script>
+
+<style lang="scss">
+.options {
+  margin-bottom: 40px;
+}
+</style>
