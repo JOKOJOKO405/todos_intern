@@ -126,7 +126,11 @@ const useTodo = () => {
   // サブスクリプション
   const subscribe = async () => {
     try {
-      const client = await API.graphql(graphqlOperation(onCreateTodo))
+      const user = await Auth.currentUserInfo()
+      console.log(user)
+      const client = await API.graphql(
+        graphqlOperation(onCreateTodo, { owner: user.username })
+      )
       if ('subscribe' in client) {
         client.subscribe({
           next: (eventData: any): void => {
