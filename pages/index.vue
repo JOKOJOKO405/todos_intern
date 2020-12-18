@@ -1,14 +1,11 @@
 <template>
   <div class="container">
     <h1 class="todo__title">TODOリスト</h1>
-    <amplify-authenticsator>
-      <BoardComponent>
-        <FormComponent />
-        <ListComponent />
-        <OptionComponent />
-      </BoardComponent>
-      <amplify-sign-out></amplify-sign-out>
-    </amplify-authenticsator>
+    <BoardComponent>
+      <FormComponent />
+      <ListComponent />
+      <OptionComponent />
+    </BoardComponent>
   </div>
 </template>
 
