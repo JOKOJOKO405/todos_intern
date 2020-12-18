@@ -1,14 +1,16 @@
 <template>
   <div class="container">
-    <h1 class="todo__title">TODOリスト</h1>
-    <amplify-authenticsator>
-      <BoardComponent>
-        <FormComponent />
-        <ListComponent />
-        <OptionComponent />
-      </BoardComponent>
-      <amplify-sign-out></amplify-sign-out>
-    </amplify-authenticsator>
+    <form class="form" @submit.prevent="signIn">
+      <label>
+        <span class="label">ユーザー名</span>
+        <input v-model="state.name" type="text" name="name" />
+      </label>
+      <label class="label">
+        <span>パスワード</span>
+        <input v-model="state.pass" type="password" name="pass" />
+      </label>
+      <button>Sign In</button>
+    </form>
   </div>
 </template>
 
@@ -19,8 +21,8 @@ import { TodoStore } from '~/composition/useTodo'
 
 export default defineComponent({
   setup() {
-    const { created } = inject(TodoKey) as TodoStore
-    return { created }
+    const { signIn, state } = inject(TodoKey) as TodoStore
+    return { signIn, state }
   },
 })
 </script>
@@ -31,14 +33,31 @@ export default defineComponent({
   max-width: 840px;
   margin: 0 auto;
 }
-.todo {
-  &__title {
-    font: {
-      size: 40px;
+.form {
+  .label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+  input {
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 100%;
+    border-radius: 4px;
+    &:not(:nth-of-type(2)) {
+      margin-bottom: 24px;
     }
-    color: #4d4d4d;
-    margin: 0 auto 40px;
-    text-align: center;
+  }
+  button {
+    outline: none;
+    border: none;
+    padding: 16px;
+    background: #3bc37f;
+    color: #fff;
+    width: 320px;
+    display: block;
+    margin: 0 auto;
+    border-radius: 4px;
   }
 }
 </style>
