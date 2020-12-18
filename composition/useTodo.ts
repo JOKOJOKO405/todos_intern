@@ -34,10 +34,6 @@ const useTodo = () => {
     console.log('呼び出し')
   }
 
-  const test = () => {
-    console.log('呼び出されました')
-  }
-
   // Todo追加
   const addTodo = async () => {
     const todo = {
@@ -92,20 +88,28 @@ const useTodo = () => {
 
   // Todo取得
   const getTodo = async () => {
-    const todosData: any = await API.graphql(graphqlOperation(listTodos))
-    state.todos.push(...state.todos, ...todosData.data.listTodos.items)
+    try {
+      const todosData: any = await API.graphql(graphqlOperation(listTodos))
+      state.todos.push(...state.todos, ...todosData.data.listTodos.items)
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   // サブスクリプション
   const subscribe = async () => {
-    const client = await API.graphql(graphqlOperation(onCreateTodo))
-    if ('subscribe' in client) {
-      client.subscribe({
-        next: (eventData: any): void => {
-          const todo = eventData.value.data.onCreateTodo
-          state.todos = [...state.todos, todo]
-        },
-      })
+    try {
+      const client = await API.graphql(graphqlOperation(onCreateTodo))
+      if ('subscribe' in client) {
+        client.subscribe({
+          next: (eventData: any): void => {
+            const todo = eventData.value.data.onCreateTodo
+            state.todos = [...state.todos, todo]
+          },
+        })
+      }
+    } catch (e) {
+      console.log(`${e}  faild`)
     }
   }
 
@@ -119,7 +123,6 @@ const useTodo = () => {
     clearText,
     getTodo,
     subscribe,
-    test,
   }
 }
 export type TodoStore = ReturnType<typeof useTodo>
