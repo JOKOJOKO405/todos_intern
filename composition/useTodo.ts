@@ -1,5 +1,6 @@
 import { reactive } from '@nuxtjs/composition-api'
-import { onAuthUIStateChange } from '@aws-amplify/ui-components'
+// import { onAuthUIStateChange } from '@aws-amplify/ui-components'
+import { Auth } from 'aws-amplify'
 import API, { graphqlOperation } from '@aws-amplify/api'
 // 認証系
 import { createTodo, deleteTodo, updateTodo } from '~/src/graphql/mutations'
@@ -16,23 +17,49 @@ const useTodo = () => {
     newTodo: '',
     sort: 1,
     searchText: '',
+    user: null,
+    name: '',
+    pass: '',
   })
 
   /* ============ ロジック ============ */
-  // created
-  const created = async () => {
-    await onAuthUIStateChange((authData, authState) => {
-      if (authData && authState) {
-        getTodo()
-        subscribe()
-        console.log('success')
-      } else {
-        state.todos = []
-        console.log('faild')
-      }
-    })
-    console.log('呼び出し')
+  // サインイン
+  const signIn = async () => {
+    try {
+      const userData = await Auth.signIn(state.name, state.pass)
+      state.user = userData.username
+      window.$nuxt.$router.push('/todo')
+    } catch (error) {
+      console.log('error signing in', error)
+    }
   }
+
+  // 認証
+
+  // サインアウト
+  const signOut = async () => {
+    try {
+      await Auth.signOut()
+      state.user = null
+      window.$nuxt.$router.push('/')
+    } catch (error) {
+      console.log('error signing out: ', error)
+    }
+  }
+
+  // const created = async () => {
+  //   await onAuthUIStateChange((authData, authState) => {
+  //     if (authData && authState) {
+  //       getTodo()
+  //       subscribe()
+  //       console.log('success')
+  //     } else {
+  //       state.todos = []
+  //       console.log('faild')
+  //     }
+  //   })
+  //   console.log('呼び出し')
+  // }
 
   // Todo追加
   const addTodo = async () => {
@@ -115,7 +142,8 @@ const useTodo = () => {
 
   return {
     state,
-    created,
+    signIn,
+    signOut,
     addTodo,
     editTodo,
     delTodo,
