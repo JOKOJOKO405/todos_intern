@@ -25,7 +25,11 @@ export default {
     '@nuxtjs/eslint-module',
     '@nuxt/typescript-build',
     '@nuxtjs/composition-api',
+    '@nuxtjs/monent',
   ],
+  moment: {
+    locales: ['ja'],
+  },
 
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [],
