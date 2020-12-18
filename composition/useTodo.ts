@@ -1,5 +1,4 @@
 import { reactive } from '@nuxtjs/composition-api'
-// import { onAuthUIStateChange } from '@aws-amplify/ui-components'
 import { Auth } from 'aws-amplify'
 import API, { graphqlOperation } from '@aws-amplify/api'
 // 認証系
@@ -14,7 +13,6 @@ const useTodo = () => {
     text: '',
     isEdit: false,
     todoIndex: '',
-    newTodo: '',
     sort: 1,
     searchText: '',
     user: null,
@@ -127,7 +125,6 @@ const useTodo = () => {
   const subscribe = async () => {
     try {
       const user = await Auth.currentUserInfo()
-      console.log(user)
       const client = await API.graphql(
         graphqlOperation(onCreateTodo, { owner: user.username })
       )
