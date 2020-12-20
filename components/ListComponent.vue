@@ -9,19 +9,35 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject } from '@nuxtjs/composition-api'
+import { defineComponent, inject, onMounted } from '@nuxtjs/composition-api'
 import { TodoStore } from '~/composition/useTodo'
 import { TodoKey } from '~/composition/compositionKey'
 
 export default defineComponent({
   setup() {
-    const { state, getTodo, subscribe, delTodo } = inject(TodoKey) as TodoStore
-
+    const {
+      state,
+      getTodo,
+      subscribe,
+      subscribeEdit,
+      delTodo,
+      editFlag,
+      subscribeDelete,
+    } = inject(TodoKey) as TodoStore
+    onMounted(() => {
+      getTodo()
+      subscribe()
+      subscribeEdit()
+      subscribeDelete()
+    })
     return {
       state,
       getTodo,
       subscribe,
       delTodo,
+      editFlag,
+      subscribeEdit,
+      subscribeDelete,
     }
   },
 })
