@@ -2,9 +2,13 @@ import { reactive } from '@nuxtjs/composition-api'
 import { Auth } from 'aws-amplify'
 import API, { graphqlOperation } from '@aws-amplify/api'
 // 認証系
-import { createTodo, deleteTodo, updateTodo } from '~/src/graphql/mutations'
+import { createTodo, updateTodo, deleteTodo } from '~/src/graphql/mutations'
 import { listTodos } from '~/src/graphql/queries'
-import { onCreateTodo } from '~/src/graphql/subscriptions'
+import {
+  onCreateTodo,
+  onUpdateTodo,
+  onDeleteTodo,
+} from '~/src/graphql/subscriptions'
 
 const useTodo = () => {
   // state
@@ -71,7 +75,7 @@ const useTodo = () => {
       }
     }
   }
-  // Todo編集
+
   const editTodo = async () => {
     const todo = {
       name: state.text,
@@ -88,6 +92,7 @@ const useTodo = () => {
         })
       )
       state.isEdit = false
+      clearText()
     }
   }
 
@@ -108,7 +113,6 @@ const useTodo = () => {
   const clearText = () => {
     state.text = ''
     state.isEdit = false
-    console.log('消したよ')
   }
 
   // Todo取得
@@ -122,12 +126,14 @@ const useTodo = () => {
   }
 
   // サブスクリプション
+  // onCreate
   const subscribe = async () => {
     try {
       const user = await Auth.currentUserInfo()
       const client = await API.graphql(
         graphqlOperation(onCreateTodo, { owner: user.username })
       )
+
       if ('subscribe' in client) {
         client.subscribe({
           next: (eventData: any): void => {
@@ -141,6 +147,48 @@ const useTodo = () => {
     }
   }
 
+  // Todo編集
+  // いったん普通のeditTodoしてからmountedとかcreatedで呼び出す（っぽい）
+  const subscribeEdit = async () => {
+    // ユーザー情報取得
+    const user = await Auth.currentUserInfo()
+    // graphqlOperationは内容によって戻り値が違うのでany型つけとく
+    const client: any = await API.graphql(
+      graphqlOperation(onUpdateTodo, { owner: user.username })
+    )
+
+    client.subscribe({
+      next: (eventData: any): void => {
+        const updatedEvent = eventData.value.data.onUpdateTodo
+        // 配列のindexを取得
+        const index = state.todos.findIndex(
+          (item: any) => item.id === updatedEvent.id
+        )
+        state.todos.splice(index, 1, updatedEvent)
+      },
+    })
+  }
+
+  // todo削除（サブスクリプション）
+  const subscribeDelete = async () => {
+    // ユーザー情報取得
+    const user = await Auth.currentUserInfo()
+    const client: any = await API.graphql(
+      graphqlOperation(onDeleteTodo, { owner: user.username })
+    )
+
+    client.subscribe({
+      next: (eventData: any): void => {
+        const delEvent = eventData.value.data.onDeleteTodo
+        // 配列のindexを取得
+        const index = state.todos.findIndex(
+          (eventData: any) => eventData.id === delEvent.id
+        )
+        state.todos.splice(index, 1)
+      },
+    })
+  }
+
   return {
     state,
     signIn,
@@ -152,6 +200,8 @@ const useTodo = () => {
     clearText,
     getTodo,
     subscribe,
+    subscribeEdit,
+    subscribeDelete,
   }
 }
 export type TodoStore = ReturnType<typeof useTodo>
