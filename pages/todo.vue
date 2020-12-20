@@ -3,17 +3,7 @@
     <h1 class="todo__title">TODOリスト</h1>
     <BoardComponent>
       <FormComponent />
-      <ul class="todo__list">
-        <li
-          v-for="(todo, index) in state.todos"
-          :key="index"
-          class="todo__item"
-        >
-          <p class="todo__name" @click="editFlag(index)">{{ todo.name }}</p>
-          <p class="todo__date">{{ todo.createdAt }}</p>
-          <button class="todo__delBtn" @click="delTodo(index)">Del</button>
-        </li>
-      </ul>
+      <ListComponent />
       <OptionComponent />
     </BoardComponent>
     <form @submit.prevent="signOut">
@@ -34,15 +24,15 @@ export default defineComponent({
       const user = await Auth.currentUserInfo()
       if (user == null) {
         window.$nuxt.$router.push('/')
-      } else {
-        getTodo()
-        subscribe()
       }
     })
-    const { signOut, state, getTodo, subscribe, editFlag, delTodo } = inject(
-      TodoKey
-    ) as TodoStore
-    return { signOut, state, getTodo, subscribe, editFlag, delTodo }
+    const { signOut, state, editFlag, delTodo } = inject(TodoKey) as TodoStore
+    return {
+      signOut,
+      state,
+      editFlag,
+      delTodo,
+    }
   },
 })
 </script>
